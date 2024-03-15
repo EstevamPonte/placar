@@ -36,7 +36,23 @@ export default function Team() {
         if (!name) return;
         setTeam((prev) => {
             const nextValue = [...prev, name];
+            const alreadyHasOnTheList = prev.find((item) => item === name);
+            if (alreadyHasOnTheList) return prev;
             localStorage.setItem("team", JSON.stringify(nextValue));
+            return nextValue;
+        });
+        setName("");
+    }
+
+    function deleteMember(name: string) {
+        const member = name.toLocaleLowerCase().replace(" ", "");
+
+        setTeam((prev) => {
+            const nextValue = prev.filter(
+                (item) => item.toLocaleLowerCase().replace(" ", "") !== member
+            );
+            localStorage.setItem("team", JSON.stringify(nextValue));
+            console.log(nextValue);
             return nextValue;
         });
         setName("");
@@ -155,10 +171,16 @@ export default function Team() {
                 <ul className="grid grid-cols-2 lg:grid-cols-3 gap-3 ">
                     {team.map((person) => (
                         <li
-                            className="border-2 border-gray-400 rounded-md p-2 w-full"
+                            className="border-2 border-gray-400 rounded-md p-2 w-full relative"
                             key={person}
                         >
                             {person}
+                            <button
+                                onClick={() => deleteMember(person)}
+                                className="absolute rounded-full bg-red-500 -top-3   h-6 w-6 right-0  text-sm"
+                            >
+                                X
+                            </button>
                         </li>
                     ))}
                 </ul>
